@@ -100,15 +100,15 @@ const Footer = () => {
             <p className="text-white/60 mb-4">
               Subscribe to our newsletter for tips and updates.
             </p>
-            <form className="flex gap-2">
+            <form className="flex flex-col sm:flex-row gap-2">
               <input
                 type="email"
                 placeholder="Your email"
-                className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-primary"
+                className="min-w-0 flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-primary"
               />
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"
+                className="px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap"
               >
                 Subscribe
               </button>
