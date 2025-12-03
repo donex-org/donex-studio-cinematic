@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Star, Quote, Send, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Star, Quote, Send } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -67,6 +67,15 @@ const Testimonials = () => {
     fetchTestimonials();
   }, []);
 
+  // Auto-slide effect
+  useEffect(() => {
+    if (testimonials.length === 0) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [testimonials.length]);
+
   const fetchTestimonials = async () => {
     try {
       const { data, error } = await supabase
@@ -114,13 +123,6 @@ const Testimonials = () => {
     }
   };
 
-  const nextTestimonial = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-  };
-
-  const prevTestimonial = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
 
   const renderStars = (rating: number, interactive = false, onSelect?: (rating: number) => void) => {
     return (
@@ -160,56 +162,48 @@ const Testimonials = () => {
           </p>
         </div>
 
-        {/* Testimonials Carousel */}
+        {/* Full-width Auto-sliding Testimonials */}
         {testimonials.length > 0 && (
-          <div className="max-w-4xl mx-auto mb-12">
-            <div className="relative bg-white rounded-3xl shadow-xl p-8 lg:p-12">
-              {/* Quote Icon */}
-              <div className="absolute -top-6 left-8 w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                <Quote className="w-6 h-6 text-primary-foreground" />
-              </div>
-
-              {/* Content */}
-              <div className="pt-4">
-                <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed mb-8 italic">
-                  "{testimonials[currentIndex]?.message}"
-                </p>
-
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <h4 className="font-bold text-foreground text-lg">
-                      {testimonials[currentIndex]?.name}
-                    </h4>
-                    {testimonials[currentIndex]?.company && (
-                      <p className="text-muted-foreground">
-                        {testimonials[currentIndex]?.company}
-                      </p>
-                    )}
-                    <div className="mt-2">
-                      {renderStars(testimonials[currentIndex]?.rating || 5)}
+          <div className="mb-10 overflow-hidden">
+            <div 
+              className="flex transition-transform duration-700 ease-in-out"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            >
+              {testimonials.map((testimonial) => (
+                <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
+                  <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-6 lg:p-10 relative">
+                    <Quote className="absolute top-4 left-4 w-8 h-8 text-primary/20" />
+                    <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed mb-6 italic text-center">
+                      "{testimonial.message}"
+                    </p>
+                    <div className="flex flex-col items-center gap-2">
+                      <h4 className="font-bold text-foreground text-lg">
+                        {testimonial.name}
+                      </h4>
+                      {testimonial.company && (
+                        <p className="text-muted-foreground text-sm">
+                          {testimonial.company}
+                        </p>
+                      )}
+                      <div className="mt-1">
+                        {renderStars(testimonial.rating)}
+                      </div>
                     </div>
                   </div>
-
-                  {/* Navigation */}
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={prevTestimonial}
-                      className="w-10 h-10 border border-border rounded-full flex items-center justify-center hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all"
-                    >
-                      <ChevronLeft className="w-5 h-5" />
-                    </button>
-                    <span className="text-sm text-muted-foreground">
-                      {currentIndex + 1} / {testimonials.length}
-                    </span>
-                    <button
-                      onClick={nextTestimonial}
-                      className="w-10 h-10 border border-border rounded-full flex items-center justify-center hover:bg-primary hover:border-primary hover:text-primary-foreground transition-all"
-                    >
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
-                  </div>
                 </div>
-              </div>
+              ))}
+            </div>
+            {/* Dots indicator */}
+            <div className="flex justify-center gap-2 mt-6">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`w-2 h-2 rounded-full transition-all ${
+                    index === currentIndex ? "bg-primary w-6" : "bg-border"
+                  }`}
+                />
+              ))}
             </div>
           </div>
         )}
