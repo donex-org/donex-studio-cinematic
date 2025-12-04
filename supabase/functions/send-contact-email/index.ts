@@ -32,7 +32,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "Donex Studio <onboarding@resend.dev>",
-        to: ["hello@donexstudio.com"],
+        to: ["vkinyua59@gmail.com"],
         subject: `New Contact: ${subject}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
