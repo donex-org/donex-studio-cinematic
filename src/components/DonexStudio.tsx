@@ -15,7 +15,7 @@ const DonexStudio = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <Hero />
-      <Statistics />
+      {/* <Statistics /> */}
       <About />
       <Portfolio />
       <Services />

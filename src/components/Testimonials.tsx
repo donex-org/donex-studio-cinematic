@@ -1,323 +1,210 @@
-import { useState, useEffect, useCallback } from "react";
-import { Star, Quote, Send } from "lucide-react";
-import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 
 interface Testimonial {
   id: string;
   name: string;
-  company: string | null;
-  rating: number;
+  role: string;
   message: string;
+  image: string;
+  rating: number;
 }
 
 const Testimonials = () => {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [showForm, setShowForm] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    company: "",
-    rating: 5,
-    message: "",
-  });
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  // Sample testimonials for display (since new ones need approval)
-  const sampleTestimonials: Testimonial[] = [
+  const testimonials: Testimonial[] = [
     {
       id: "1",
       name: "James Mwangi",
-      company: "TechKE Solutions",
+      role: "CEO / TechKE Solutions",
+      message: "DonexStudio transformed our corporate videos into engaging content that perfectly captured our brand essence. The team's attention to detail and creative vision exceeded all our expectations.",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop",
       rating: 5,
-      message: "DonexStudio transformed our corporate videos into engaging content. The team understood our brand perfectly and delivered exceptional quality. Highly recommend!",
     },
     {
       id: "2",
       name: "Sarah Odhiambo",
-      company: "Style & Grace Boutique",
+      role: "Founder / Style & Grace Boutique",
+      message: "The social media reels they created for our fashion brand went viral! Professional, creative, and always on time. Best investment we've made for our marketing strategy.",
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
       rating: 5,
-      message: "The social media reels they created for our fashion brand went viral! Professional, creative, and always on time. Best investment for our marketing.",
     },
     {
       id: "3",
       name: "David Kimani",
-      company: "YouTube Creator",
+      role: "Content Creator / YouTube",
+      message: "As a content creator, I needed a reliable editor who understood YouTube algorithms. DonexStudio consistently delivers amazing work that keeps my audience engaged and coming back for more.",
+      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop",
       rating: 5,
-      message: "As a content creator, I needed a reliable editor who understood YouTube algorithms. DonexStudio delivers consistently amazing work that keeps my audience engaged.",
     },
     {
       id: "4",
       name: "Grace Wanjiku",
-      company: "Events by Grace",
-      rating: 4,
-      message: "They edited our wedding highlight video beautifully. Every moment was captured perfectly with amazing transitions and music selection. Thank you!",
-    },
-    {
-      id: "5",
-      name: "Michael Otieno",
-      company: "Otieno Music",
+      role: "Event Planner / Events by Grace",
+      message: "They edited our wedding highlight video beautifully. Every precious moment was captured perfectly with amazing transitions and music selection. Truly exceptional work!",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
       rating: 5,
-      message: "The music video they produced exceeded all expectations. Creative vision, professional execution, and great communication throughout the project.",
     },
   ];
 
-  useEffect(() => {
-    fetchTestimonials();
-  }, []);
-
-  // Auto-slide effect
-  useEffect(() => {
-    if (testimonials.length === 0) return;
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [testimonials.length]);
-
-  const fetchTestimonials = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("testimonials")
-        .select("id, name, company, rating, message")
-        .order("created_at", { ascending: false });
-
-      if (error) throw error;
-
-      // Combine approved testimonials with samples
-      const combined = data && data.length > 0 
-        ? [...data, ...sampleTestimonials] 
-        : sampleTestimonials;
-      
-      setTestimonials(combined);
-    } catch (error) {
-      console.error("Error fetching testimonials:", error);
-      setTestimonials(sampleTestimonials);
-    }
+  // Auto-slide effect removed
+  
+  const goToPrevious = () => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
+    setTimeout(() => setIsAnimating(false), 500);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const { error } = await supabase.from("testimonials").insert({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        company: formData.company.trim() || null,
-        rating: formData.rating,
-        message: formData.message.trim(),
-      });
-
-      if (error) throw error;
-
-      toast.success("Thank you! Your testimonial has been submitted for review.");
-      setFormData({ name: "", email: "", company: "", rating: 5, message: "" });
-      setShowForm(false);
-    } catch (error) {
-      console.error("Error submitting testimonial:", error);
-      toast.error("Failed to submit testimonial. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+  const goToNext = () => {
+    if (isAnimating) return;
+    setIsAnimating(true);
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+    setTimeout(() => setIsAnimating(false), 500);
   };
 
-
-  const renderStars = (rating: number, interactive = false, onSelect?: (rating: number) => void) => {
-    return (
-      <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <button
-            key={star}
-            type={interactive ? "button" : undefined}
-            onClick={interactive && onSelect ? () => onSelect(star) : undefined}
-            className={interactive ? "cursor-pointer" : "cursor-default"}
-            disabled={!interactive}
-          >
-            <Star
-              className={`w-5 h-5 ${
-                star <= rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
-              } ${interactive ? "hover:text-yellow-400 transition-colors" : ""}`}
-            />
-          </button>
-        ))}
-      </div>
-    );
+  const goToIndex = (index: number) => {
+    if (isAnimating || index === currentIndex) return;
+    setIsAnimating(true);
+    setCurrentIndex(index);
+    setTimeout(() => setIsAnimating(false), 500);
   };
+
+  const currentTestimonial = testimonials[currentIndex];
 
   return (
-    <section id="testimonials" className="section-padding bg-background">
-      <div className="container-max">
+    <section id="testimonials" className="relative bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-20 lg:py-32 overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-            Testimonials
-          </span>
-          <h2 className="section-title mt-2 mb-4">
-            What Our <span className="text-primary">Clients Say</span>
+          <div className="inline-block mb-4">
+            <span className="text-blue-400 text-sm tracking-widest uppercase font-light" style={{ fontFamily: 'Georgia, serif' }}>
+              Testimonials
+            </span>
+            <div className="w-12 h-0.5 bg-blue-500 mt-2 mx-auto" />
+          </div>
+          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+            What Our <span className="text-blue-400">Clients Say</span>
           </h2>
-          <p className="section-subtitle max-w-2xl mx-auto">
-            Don't just take our word for it. Here's what our satisfied clients have to say about working with us.
+          <p className="text-white/70 text-lg max-w-2xl mx-auto" style={{ fontFamily: 'Georgia, serif' }}>
+            Don't just take our word for it. Here's what our satisfied clients have to say
           </p>
         </div>
 
-        {/* Full-width Auto-sliding Testimonials */}
-        {testimonials.length > 0 && (
-          <div className="mb-10 overflow-hidden">
+        {/* Main Testimonial Display - Fixed Height Container */}
+        <div className="relative max-w-5xl mx-auto">
+          {/* Profile Image with Quote Icon */}
+          <div className="flex justify-between items-start mb-12">
             <div 
-              className="flex transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+              key={`image-${currentIndex}`}
+              className={`relative transition-all duration-500 ease-in-out ${
+                isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+              }`}
             >
-              {testimonials.map((testimonial) => (
-                <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
-                  <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-6 lg:p-10 relative">
-                    <Quote className="absolute top-4 left-4 w-8 h-8 text-primary/20" />
-                    <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed mb-6 italic text-center">
-                      "{testimonial.message}"
-                    </p>
-                    <div className="flex flex-col items-center gap-2">
-                      <h4 className="font-bold text-foreground text-lg">
-                        {testimonial.name}
-                      </h4>
-                      {testimonial.company && (
-                        <p className="text-muted-foreground text-sm">
-                          {testimonial.company}
-                        </p>
-                      )}
-                      <div className="mt-1">
-                        {renderStars(testimonial.rating)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-3xl overflow-hidden border-4 border-blue-500/30 shadow-2xl">
+                <img
+                  src={currentTestimonial.image}
+                  alt={currentTestimonial.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </div>
-            {/* Dots indicator */}
-            <div className="flex justify-center gap-2 mt-6">
+            
+            <div className="w-20 h-20 lg:w-24 lg:h-24 bg-blue-500/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-blue-400/30">
+              <svg className="w-10 h-10 lg:w-12 lg:h-12 text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z" />
+              </svg>
+            </div>
+          </div>
+
+          {/* Testimonial Content - Fixed Height */}
+          <div className="mb-12 min-h-[400px] lg:min-h-[300px] flex flex-col justify-between">
+            <div 
+              key={`content-${currentIndex}`}
+              className={`transition-all duration-500 ease-in-out ${
+                isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
+              }`}
+            >
+              <p className="text-2xl lg:text-4xl text-white font-light leading-relaxed mb-8" style={{ fontFamily: 'Georgia, serif' }}>
+                {currentTestimonial.message}
+              </p>
+            </div>
+
+            {/* Author Info */}
+            <div 
+              key={`author-${currentIndex}`}
+              className={`flex items-center justify-between transition-all duration-500 ease-in-out ${
+                isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'
+              }`}
+              style={{ transitionDelay: '100ms' }}
+            >
+              <div>
+                <h3 className="text-xl lg:text-2xl font-bold text-white mb-1" style={{ fontFamily: 'Playfair Display, serif' }}>
+                  {currentTestimonial.name}
+                </h3>
+                <p className="text-white/60 text-sm lg:text-base" style={{ fontFamily: 'Georgia, serif' }}>
+                  {currentTestimonial.role}
+                </p>
+              </div>
+
+              {/* Rating Stars */}
+              <div className="flex gap-1">
+                {[...Array(currentTestimonial.rating)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation Controls */}
+          <div className="flex items-center justify-between">
+            {/* Dots Indicator */}
+            <div className="flex gap-2">
               {testimonials.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === currentIndex ? "bg-primary w-6" : "bg-border"
-                  }`}
+                  onClick={() => goToIndex(index)}
+                  disabled={isAnimating}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    index === currentIndex 
+                      ? "w-8 bg-blue-500" 
+                      : "w-2 bg-white/30 hover:bg-white/50"
+                  } ${isAnimating ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                  aria-label={`Go to testimonial ${index + 1}`}
                 />
               ))}
             </div>
-          </div>
-        )}
 
-        {/* Share Your Experience CTA */}
-        <div className="text-center">
-          {!showForm ? (
-            <button
-              onClick={() => setShowForm(true)}
-              className="btn-primary inline-flex items-center gap-2"
-            >
-              Share Your Experience
-              <Star className="w-5 h-5" />
-            </button>
-          ) : (
-            <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6 lg:p-8">
-              <h3 className="text-xl font-bold text-foreground font-display mb-6">
-                Share Your Experience
-              </h3>
-
-              <form onSubmit={handleSubmit} className="space-y-5 text-left">
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Your Name *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                      maxLength={100}
-                      className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                      placeholder="John Doe"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Email Address *
-                    </label>
-                    <input
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      required
-                      maxLength={255}
-                      className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                      placeholder="john@example.com"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Company (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.company}
-                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    maxLength={100}
-                    className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                    placeholder="Your Company"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Your Rating *
-                  </label>
-                  {renderStars(formData.rating, true, (rating) => 
-                    setFormData({ ...formData, rating })
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">
-                    Your Message *
-                  </label>
-                  <textarea
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    required
-                    maxLength={500}
-                    rows={4}
-                    className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all resize-none"
-                    placeholder="Tell us about your experience working with us..."
-                  />
-                </div>
-
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setShowForm(false)}
-                    className="btn-outline flex-1"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="btn-primary flex-1 inline-flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isSubmitting ? "Submitting..." : (
-                      <>
-                        Submit
-                        <Send className="w-4 h-4" />
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
+            {/* Arrow Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={goToPrevious}
+                disabled={isAnimating}
+                className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center transition-all duration-300 hover:scale-110 group ${
+                  isAnimating ? 'cursor-not-allowed opacity-50' : ''
+                }`}
+                aria-label="Previous testimonial"
+              >
+                <ChevronLeft className="w-6 h-6 text-white group-hover:text-blue-400 transition-colors" />
+              </button>
+              <button
+                onClick={goToNext}
+                disabled={isAnimating}
+                className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center transition-all duration-300 hover:scale-110 group ${
+                  isAnimating ? 'cursor-not-allowed opacity-50' : ''
+                }`}
+                aria-label="Next testimonial"
+              >
+                <ChevronRight className="w-6 h-6 text-white group-hover:text-blue-400 transition-colors" />
+              </button>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </section>

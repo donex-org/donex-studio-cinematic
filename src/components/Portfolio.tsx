@@ -1,180 +1,157 @@
-import { useState } from "react";
-import { Play, ExternalLink } from "lucide-react";
+import { useRef, useEffect } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+type Project = {
+  id: number;
+  title: string;
+  subtitle: string;
+  videoUrl: string;
+};
 
 const Portfolio = () => {
-  const [activeFilter, setActiveFilter] = useState("all");
-
-  const filters = [
-    { id: "all", label: "All Projects" },
-    { id: "youtube", label: "YouTube" },
-    { id: "social", label: "Social Media" },
-    { id: "corporate", label: "Corporate" },
-    { id: "music", label: "Music Videos" },
-  ];
-
-  const projects = [
+  const projects: Project[] = [
     {
       id: 1,
-      title: "Tech Review Channel Rebrand",
-      category: "social",
-      // thumbnail: "https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=600&h=400&fit=crop",
-      thumbnail: "/images/1.jpg",
-      description: "Complete visual overhaul for a tech YouTube channel",
+      title: "Tech Vision",
+      subtitle: "Innovation",
+      videoUrl: "/videos/1.mp4"
     },
     {
       id: 2,
-      title: "Fitness Brand Campaign",
-      category: "social",
-      // thumbnail: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&h=400&fit=crop",
-      thumbnail: "/images/2.jpg",
-      description: "Dynamic reels and stories for fitness brand launch",
+      title: "Pixel Fusion",
+      subtitle: "Techno",
+      videoUrl: "/videos/3.mp4"
     },
     {
       id: 3,
-      title: "Corporate Annual Report",
-      category: "social",
-      // thumbnail: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&fit=crop",
-      thumbnail: "/images/3.jpg",
-      description: "Engaging video presentation for stakeholders",
+      title: "EcoExplorer",
+      subtitle: "GreenEarth",
+      videoUrl: "/videos/2.mp4"
     },
     {
       id: 4,
-      title: "Afrobeats Music Video",
-      category: "social",
-      // thumbnail: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop",
-      thumbnail: "/images/4.jpg",
-      description: "High-energy music video with custom effects",
-    },
-    {
-      id: 5,
-      title: "Travel Vlog Series",
-      category: "social",
-      // thumbnail: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&h=400&fit=crop",
-      thumbnail: "/images/5.jpg",
-      description: "Cinematic travel documentary editing",
-    },
-    // {
-    //   id: 6,
-    //   title: "Restaurant Promo",
-    //   category: "social",
-    //   // thumbnail: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=400&fit=crop",
-    //   thumbnail: "public/images/6.jpg",
-    //   description: "Mouth-watering food content for Instagram",
-    // },
-    // {
-    //   id: 7,
-    //   title: "Startup Pitch Video",
-    //   category: "social",
-    //   // thumbnail: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop",
-    //   thumbnail: "public/images/7.jpg",
-    //   description: "Compelling pitch deck video for investors",
-    // },
-    // {
-    //   id: 8,
-    //   title: "Gospel Music Video",
-    //   category: "social",
-    //   // thumbnail: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=600&h=400&fit=crop",
-    //   thumbnail: "public/images/8.jpg",
-    //   description: "Uplifting music video with beautiful visuals",
-    // },
+      title: "Urban Uplift",
+      subtitle: "MetroScape",
+      videoUrl: "/videos/1.mp4"
+    }
   ];
 
-  const filteredProjects = activeFilter === "all" 
-    ? projects 
-    : projects.filter(p => p.category === activeFilter);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    const wrapper = wrapperRef.current;
+    if (!section || !wrapper) return;
+
+    ScrollTrigger.refresh();
+
+    const totalWidth = wrapper.scrollWidth;
+    const viewportWidth = window.innerWidth;
+    const scrollDistance = totalWidth - viewportWidth;
+
+    gsap.to(wrapper, {
+      x: () => `-${scrollDistance}px`,
+      ease: "none",
+      scrollTrigger: {
+        trigger: section,
+        start: "top top",
+        end: () => `+=${scrollDistance}`, 
+        pin: true,
+        scrub: 1,
+        invalidateOnRefresh: true,
+      },
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach(st => st.kill());
+    };
+  }, []);
+
+  const handleMouseEnter = (index: number) => {
+    const video = videoRefs.current[index];
+    if (video) {
+      video.play();
+    }
+  };
+
+  const handleMouseLeave = (index: number) => {
+    const video = videoRefs.current[index];
+    if (video) {
+      video.pause();
+    }
+  };
 
   return (
-    <section id="portfolio" className="section-padding bg-section-gray">
-      <div className="container-max">
-        {/* Section Header */}
-        <div className="text-center mb-12">
-          <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-            Portfolio
-          </span>
-          <h2 className="section-title mt-2 mb-4">
-            Our <span className="text-primary">Work</span>
+    <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-20 lg:py-32">
+      {/* Portfolio Title */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 mb-16">
+        <div className="text-center space-y-4">
+          <div className="inline-block">
+            <span className="text-blue-400 text-sm uppercase font-light tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>
+              Portfolio
+            </span>
+            <div className="w-12 h-0.5 bg-blue-500 mt-2 mx-auto" />
+          </div>
+          <h2 className="text-4xl lg:text-5xl font-bold text-white leading-tight" style={{ fontFamily: 'Playfair Display, serif' }}>
+            Our Creative <span className="text-blue-400">Works</span>
           </h2>
-          <p className="section-subtitle max-w-2xl mx-auto">
-            Browse through our diverse portfolio of video editing projects across various industries
+          <p className="text-white/60 text-lg max-w-2xl mx-auto" style={{ fontFamily: 'Georgia, serif' }}>
+            Explore our collection of captivating visual stories
           </p>
         </div>
+      </div>
 
-        {/* Filters */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
-          {filters.map((filter) => (
-            <button
-              key={filter.id}
-              onClick={() => setActiveFilter(filter.id)}
-              className={`px-5 py-2 rounded-full font-medium transition-all duration-300 ${
-                activeFilter === filter.id
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-white text-muted-foreground hover:bg-primary/10 hover:text-primary"
-              }`}
-            >
-              {filter.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Projects Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredProjects.map((project) => (
+      <div ref={sectionRef} className="w-full h-screen relative flex items-center">
+        {/* Horizontal Scrolling Cards */}
+        <div
+          ref={wrapperRef}
+          className="flex space-x-8 pl-[50vw] pr-[2vw] items-center h-full"
+        >
+          {projects.map((project, index) => (
             <div
               key={project.id}
-              className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 card-hover"
+              className="relative flex-shrink-0 w-[350px] lg:w-[420px] h-[450px] lg:h-[520px] rounded-3xl overflow-hidden group cursor-pointer shadow-2xl"
+              onMouseEnter={() => handleMouseEnter(index)}
+              onMouseLeave={() => handleMouseLeave(index)}
             >
-              {/* Thumbnail */}
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                  src={project.thumbnail}
-                  alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <div className="flex gap-3">
-                    <button className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform">
-                      <Play className="w-5 h-5 text-primary ml-0.5" fill="currentColor" />
-                    </button>
-                    <button className="w-12 h-12 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform">
-                      <ExternalLink className="w-5 h-5 text-primary" />
-                    </button>
-                  </div>
-                </div>
-                {/* Category Badge */}
-                <span className="absolute top-3 left-3 px-3 py-1 bg-white/90 text-primary text-xs font-semibold rounded-full capitalize">
-                  {project.category}
-                </span>
-              </div>
+              {/* Video */}
+              <video
+                ref={(el) => (videoRefs.current[index] = el)}
+                className="w-full h-full object-cover"
+                src={project.videoUrl}
+                loop
+                muted
+                playsInline
+              />
 
-              {/* Content */}
-              <div className="p-4">
-                <h3 className="font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
+              {/* Hover Overlay */}
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-500" />
+
+              {/* Title Overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
+                <h3 className="text-2xl lg:text-3xl font-bold text-white mb-1" style={{ fontFamily: 'Playfair Display, serif' }}>
                   {project.title}
                 </h3>
-                <p className="text-sm text-muted-foreground">
-                  {project.description}
+                <p className="text-base lg:text-lg text-white/70" style={{ fontFamily: 'Georgia, serif' }}>
+                  {project.subtitle}
                 </p>
               </div>
+
+              {/* Decorative Border on Hover */}
+              <div className="absolute inset-0 border-2 border-blue-400/0 group-hover:border-blue-400/30 rounded-3xl transition-all duration-500" />
             </div>
           ))}
         </div>
-
-        {/* View More CTA */}
-        <div className="text-center mt-12">
-          <a
-            href="#contact"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="btn-outline inline-flex items-center gap-2"
-          >
-            Start Your Project
-            <ExternalLink className="w-4 h-4" />
-          </a>
-        </div>
       </div>
+
+      {/* Decorative Elements */}
+      <div className="absolute top-20 right-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-20 left-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
     </section>
   );
 };

@@ -1,112 +1,130 @@
-import { Play, ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+const portfolioItems = [
+  [
+    {
+      id: 1,
+      number: "01.",
+      title: "Beautiful Venice",
+      category: "TRAVEL",
+      image: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&h=1000&fit=crop"
+    },
+    {
+      id: 2,
+      number: "02.",
+      title: "Lovely Room",
+      category: "INTERIOR",
+      image: "https://images.unsplash.com/photo-1556912173-46c336c7fd55?w=800&h=1000&fit=crop"
+    },
+    {
+      id: 3,
+      number: "03.",
+      title: "Amazing Mountain",
+      category: "LANDSCAPES",
+      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=1000&fit=crop"
+    },
+    {
+      id: 4,
+      number: "04.",
+      title: "Street Portrait",
+      category: "PORTRAITS",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=1000&fit=crop"
+    }
+  ],
+  [
+    {
+      id: 1,
+      number: "01.",
+      title: "Sunset Paradise",
+      category: "TRAVEL",
+      image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=1000&fit=crop"
+    },
+    {
+      id: 2,
+      number: "02.",
+      title: "Modern Space",
+      category: "INTERIOR",
+      image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&h=1000&fit=crop"
+    },
+    {
+      id: 3,
+      number: "03.",
+      title: "Forest Path",
+      category: "LANDSCAPES",
+      image: "https://images.unsplash.com/photo-1511497584788-876760111969?w=800&h=1000&fit=crop"
+    },
+    {
+      id: 4,
+      number: "04.",
+      title: "Urban Life",
+      category: "PORTRAITS",
+      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&h=1000&fit=crop"
+    }
+  ]
+];
 
 const Hero = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const [currentSet, setCurrentSet] = useState(0);
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSet((prev) => (prev + 1) % portfolioItems.length);
+    }, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentItems = portfolioItems[currentSet];
 
   return (
-    <section id="home" className="gradient-hero pt-24 lg:pt-32 pb-16 lg:pb-24">
-      <div className="container-max px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Content */}
-          <div className="text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-              <Play className="w-4 h-4 text-primary" fill="currentColor" />
-              <span className="text-primary text-sm font-medium">Professional Video Editing</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display text-foreground mb-6 leading-tight">
-              Transform Your
-              <span className="text-primary"> Vision </span>
-              Into Reality
-            </h1>
-
-            <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto lg:mx-0">
-              Professional video editing services that bring your stories to life. 
-              From social media clips to cinematic productions, we deliver excellence every time.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <button
-                onClick={() => scrollToSection("#services")}
-                className="btn-primary inline-flex items-center justify-center gap-2"
-              >
-                View Services
-                <ArrowRight className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => scrollToSection("#contact")}
-                className="btn-outline"
-              >
-                Contact Us
-              </button>
-            </div>
-          </div>
-
-          {/* Video Element */}
-          <div className="relative">
-            <div className="relative bg-white rounded-2xl shadow-2xl p-4 lg:p-6">
-              {/* Video Container */}
-              <div className="aspect-video bg-foreground rounded-xl overflow-hidden relative">
-                {!isPlaying ? (
-                  <>
-                    {/* Video Thumbnail */}
-                    <img
-                      src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&h=450&fit=crop"
-                      alt="Video editing workspace"
-                      className="w-full h-full object-cover"
-                    />
-                    {/* Play Button Overlay */}
-                    <button
-                      onClick={() => setIsPlaying(true)}
-                      className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors group"
-                    >
-                      <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <Play className="w-8 h-8 text-primary-foreground ml-1" fill="currentColor" />
-                      </div>
-                    </button>
-                  </>
-                ) : (
-                  <iframe
-                    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
-                    title="DonexStudio Showreel"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full"
-                  />
-                )}
+    <section id="home" className="relative min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900">
+      {/* Portfolio Grid */}
+      <div className="relative h-screen flex items-center justify-center px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 max-w-7xl w-full h-[600px]">
+          {currentItems.map((item) => (
+            <div
+              key={item.id}
+              className="relative group cursor-pointer overflow-hidden"
+              onMouseEnter={() => setHoveredId(item.id)}
+              onMouseLeave={() => setHoveredId(null)}
+            >
+              {/* Background Image */}
+              <div className="absolute inset-0">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-500" />
               </div>
 
-              {/* Bottom Bar */}
-              <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full bg-destructive" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                  <div className="w-3 h-3 rounded-full bg-green-400" />
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground">Watch our showreel</span>
-                </div>
-                <div className="flex gap-2">
-                  <div className="w-8 h-8 bg-muted rounded-md" />
-                  <div className="w-8 h-8 bg-muted rounded-md" />
+              {/* Content */}
+              <div className="relative h-full flex flex-col justify-end p-8">
+                {/* Bottom Content */}
+                <div className="space-y-2">
+                  <div className="text-white/80 text-5xl font-light" style={{ fontFamily: 'Georgia, serif' }}>{item.number}</div>
+                  <h2 className="text-white text-2xl font-bold" style={{ fontFamily: 'Playfair Display, serif' }}>{item.title}</h2>
+                  <p className="text-white/70 text-xs tracking-widest uppercase" style={{ fontFamily: 'Georgia, serif' }}>{item.category}</p>
                 </div>
               </div>
-            </div>
 
-            {/* Floating Decorations */}
-            <div className="absolute -top-4 -right-4 w-24 h-24 bg-accent/20 rounded-2xl -z-10 rotate-12" />
-            <div className="absolute -bottom-4 -left-4 w-20 h-20 bg-primary/20 rounded-2xl -z-10 -rotate-12" />
-          </div>
+              {/* Hover Overlay */}
+              <div 
+                className={`absolute inset-0 bg-gradient-to-t from-blue-600/40 to-transparent transition-opacity duration-500 ${
+                  hoveredId === item.id ? 'opacity-100' : 'opacity-0'
+                }`}
+              />
+            </div>
+          ))}
         </div>
       </div>
+
+      {/* Footer */}
+      {/* <div className="absolute bottom-0 left-0 right-0 px-8 py-6 flex items-center justify-between">
+        <p className="text-white/50 text-xs">© All Rights Reserved 2017</p>
+        <div className="w-12 h-1 bg-blue-500 rounded-full" />
+      </div> */}
     </section>
   );
 };
