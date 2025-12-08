@@ -133,7 +133,7 @@ const About = () => {
                 className="absolute inset-0 w-full h-full object-cover"
                 controls
                 autoPlay
-                src="https://www.w3schools.com/html/mov_bbb.mp4"
+                src="/videos/1.mp4"
               >
                 Your browser does not support the video tag.
               </video>

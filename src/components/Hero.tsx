@@ -7,28 +7,28 @@ const portfolioItems = [
       number: "01.",
       title: "Beautiful Venice",
       category: "TRAVEL",
-      image: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&h=1000&fit=crop"
+      image: "/images/1.jpg"
     },
     {
       id: 2,
       number: "02.",
       title: "Lovely Room",
       category: "INTERIOR",
-      image: "https://images.unsplash.com/photo-1556912173-46c336c7fd55?w=800&h=1000&fit=crop"
+      image: "/images/2.jpg"
     },
     {
       id: 3,
       number: "03.",
       title: "Amazing Mountain",
       category: "LANDSCAPES",
-      image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=1000&fit=crop"
+      image: "/images/3.jpg"
     },
     {
       id: 4,
       number: "04.",
       title: "Street Portrait",
       category: "PORTRAITS",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=1000&fit=crop"
+      image: "/images/4.jpg"
     }
   ],
   [
@@ -37,28 +37,28 @@ const portfolioItems = [
       number: "01.",
       title: "Sunset Paradise",
       category: "TRAVEL",
-      image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&h=1000&fit=crop"
+      image: "/images/5.jpg"
     },
     {
       id: 2,
       number: "02.",
       title: "Modern Space",
       category: "INTERIOR",
-      image: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&h=1000&fit=crop"
+      image: "/images/3.jpg"
     },
     {
       id: 3,
       number: "03.",
       title: "Forest Path",
       category: "LANDSCAPES",
-      image: "https://images.unsplash.com/photo-1511497584788-876760111969?w=800&h=1000&fit=crop"
+      image: "/images/2.jpg"
     },
     {
       id: 4,
       number: "04.",
       title: "Urban Life",
       category: "PORTRAITS",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&h=1000&fit=crop"
+      image: "/images/1.jpg"
     }
   ]
 ];
