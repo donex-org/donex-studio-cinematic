@@ -40,73 +40,102 @@ const FAQ = () => {
   ];
 
   return (
-    <section id="faq" className="section-padding bg-background">
-      <div className="container-max">
+    <section id="faq" className="relative bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-20 lg:py-32 overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute top-20 right-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 left-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <span className="text-primary font-semibold text-sm uppercase tracking-wider">
-            FAQ
-          </span>
-          <h2 className="section-title mt-2 mb-4">
-            Frequently Asked <span className="text-primary">Questions</span>
+          <div className="inline-block mb-4">
+            <span className="text-blue-400 text-sm tracking-widest uppercase font-light" style={{ fontFamily: 'Georgia, serif' }}>
+              FAQ
+            </span>
+            <div className="w-12 h-0.5 bg-blue-500 mt-2 mx-auto" />
+          </div>
+          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+            Frequently Asked <span className="text-blue-400">Questions</span>
           </h2>
-          <p className="section-subtitle max-w-2xl mx-auto">
+          <p className="text-white/70 text-lg max-w-2xl mx-auto" style={{ fontFamily: 'Georgia, serif' }}>
             Got questions? We've got answers. Find everything you need to know about our services.
           </p>
         </div>
 
-        <div className="max-w-3xl mx-auto">
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className="border-b border-border last:border-b-0"
-            >
-              <button
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full py-6 flex items-center justify-between text-left group"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                    <HelpCircle className="w-5 h-5 text-primary" />
-                  </div>
-                  <span className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                    {faq.question}
-                  </span>
-                </div>
-                <ChevronDown
-                  className={`w-5 h-5 text-muted-foreground transition-transform duration-300 flex-shrink-0 ml-4 ${
-                    openIndex === index ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
+        {/* FAQ Accordion */}
+        <div className="max-w-4xl mx-auto">
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
               <div
-                className={`overflow-hidden transition-all duration-300 ${
-                  openIndex === index ? "max-h-96 pb-6" : "max-h-0"
-                }`}
+                key={index}
+                className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-xl hover:shadow-2xl hover:shadow-blue-500/20 transition-all duration-300 overflow-hidden border border-white/10"
               >
-                <p className="text-muted-foreground leading-relaxed pl-14">
-                  {faq.answer}
-                </p>
+                <button
+                  onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                  className="w-full p-6 flex items-center justify-between text-left group"
+                >
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                      openIndex === index 
+                        ? 'bg-blue-600' 
+                        : 'bg-blue-500/20 group-hover:bg-blue-500/30'
+                    }`}>
+                      <HelpCircle className={`w-6 h-6 transition-colors duration-300 ${
+                        openIndex === index ? 'text-white' : 'text-blue-400'
+                      }`} />
+                    </div>
+                    <span className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors pr-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+                      {faq.question}
+                    </span>
+                  </div>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
+                    openIndex === index 
+                      ? 'bg-blue-500/20 rotate-180' 
+                      : 'bg-white/5 group-hover:bg-white/10'
+                  }`}>
+                    <ChevronDown className={`w-5 h-5 transition-colors duration-300 ${
+                      openIndex === index ? 'text-blue-400' : 'text-white/60'
+                    }`} />
+                  </div>
+                </button>
+                <div
+                  className={`transition-all duration-500 ease-in-out ${
+                    openIndex === index ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
+                  <div className="px-6 pb-6">
+                    <div className="pl-16 pr-4">
+                      <p className="text-white/70 leading-relaxed" style={{ fontFamily: 'Georgia, serif' }}>
+                        {faq.answer}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Still have questions CTA */}
-        <div className="text-center mt-12">
-          <p className="text-muted-foreground mb-4">
-            Still have questions? We're here to help!
-          </p>
-          <a
-            href="#contact"
-            onClick={(e) => {
-              e.preventDefault();
-              document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            className="btn-primary inline-flex items-center gap-2"
-          >
-            Contact Us
-          </a>
+        <div className="text-center mt-16">
+          <div className="inline-flex flex-col items-center gap-6 p-8 lg:p-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-3xl shadow-2xl shadow-blue-500/30">
+            <h3 className="text-2xl lg:text-3xl font-bold text-white" style={{ fontFamily: 'Playfair Display, serif' }}>
+              Still Have Questions?
+            </h3>
+            <p className="text-white/90 text-base max-w-md" style={{ fontFamily: 'Georgia, serif' }}>
+              We're here to help! Reach out and we'll get back to you as soon as possible.
+            </p>
+            <a
+              href="#contact"
+              onClick={(e) => {
+                e.preventDefault();
+                document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className="px-8 py-4 bg-white text-blue-600 rounded-full font-bold transition-all duration-300 hover:scale-105 shadow-xl"
+            >
+              Contact Us
+            </a>
+          </div>
         </div>
       </div>
     </section>
