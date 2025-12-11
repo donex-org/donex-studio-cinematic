@@ -1,0 +1,284 @@
+import { Link } from "react-router-dom";
+import { ArrowRight, Play, Star, Users, Award, Film } from "lucide-react";
+import Layout from "@/components/Layout";
+
+const portfolioHighlights = [
+  {
+    id: 1,
+    title: "Tech Vision",
+    category: "Corporate",
+    image: "/images/1.jpg",
+  },
+  {
+    id: 2,
+    title: "Pixel Fusion",
+    category: "Music Video",
+    image: "/images/2.jpg",
+  },
+  {
+    id: 3,
+    title: "EcoExplorer",
+    category: "Documentary",
+    image: "/images/3.jpg",
+  },
+  {
+    id: 4,
+    title: "Urban Uplift",
+    category: "Commercial",
+    image: "/images/4.jpg",
+  },
+];
+
+const stats = [
+  { icon: Film, number: "500+", label: "Projects Completed" },
+  { icon: Award, number: "50+", label: "Awards Won" },
+  { icon: Users, number: "200+", label: "Happy Clients" },
+  { icon: Star, number: "10+", label: "Years Experience" },
+];
+
+const trustedCompanies = [
+  "TechKE Solutions",
+  "Style & Grace",
+  "Events by Grace",
+  "MediaHouse Kenya",
+  "Creative Labs",
+];
+
+const HomePage = () => {
+  return (
+    <Layout>
+      {/* Hero Section */}
+      <section className="relative min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 flex items-center justify-center overflow-hidden">
+        {/* Background Video/Image */}
+        <div className="absolute inset-0">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover opacity-30"
+          >
+            <source src="/videos/1.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/80 via-gray-900/60 to-gray-900" />
+        </div>
+
+        {/* Decorative Elements */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+
+        {/* Content */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 text-center">
+          <div className="inline-block mb-6">
+            <span
+              className="text-blue-400 text-sm tracking-widest uppercase font-light"
+              style={{ fontFamily: "Georgia, serif" }}
+            >
+              Professional Video Editing Services
+            </span>
+            <div className="w-12 h-0.5 bg-blue-500 mt-2 mx-auto" />
+          </div>
+
+          <h1
+            className="text-4xl sm:text-5xl lg:text-7xl font-bold text-white mb-6 leading-tight"
+            style={{ fontFamily: "Playfair Display, serif" }}
+          >
+            Transforming Your
+            <br />
+            <span className="text-blue-400">Vision</span> Into Reality
+          </h1>
+
+          <p
+            className="text-white/70 text-lg lg:text-xl max-w-3xl mx-auto mb-10"
+            style={{ fontFamily: "Georgia, serif" }}
+          >
+            We craft compelling visual stories that captivate audiences and
+            elevate your brand. From concept to final cut, we bring your ideas
+            to life.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              to="/projects"
+              className="group px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full transition-all duration-300 shadow-lg shadow-blue-500/30 hover:scale-105 flex items-center gap-2"
+            >
+              View Our Work
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              to="/contact"
+              className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full border border-white/20 transition-all duration-300 hover:scale-105 flex items-center gap-2"
+            >
+              <Play className="w-5 h-5" fill="currentColor" />
+              Get Started
+            </Link>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-2">
+            <div className="w-1.5 h-3 bg-white/60 rounded-full" />
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {stats.map((stat, index) => (
+              <div
+                key={index}
+                className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 text-center hover:bg-white/10 transition-all duration-300"
+              >
+                <stat.icon className="w-10 h-10 text-blue-400 mx-auto mb-4" />
+                <h3
+                  className="text-3xl lg:text-4xl font-bold text-white mb-2"
+                  style={{ fontFamily: "Playfair Display, serif" }}
+                >
+                  {stat.number}
+                </h3>
+                <p
+                  className="text-white/60 text-sm"
+                  style={{ fontFamily: "Georgia, serif" }}
+                >
+                  {stat.label}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Projects */}
+      <section className="bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-20 lg:py-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="text-center mb-16">
+            <div className="inline-block mb-4">
+              <span
+                className="text-blue-400 text-sm tracking-widest uppercase font-light"
+                style={{ fontFamily: "Georgia, serif" }}
+              >
+                Featured Work
+              </span>
+              <div className="w-12 h-0.5 bg-blue-500 mt-2 mx-auto" />
+            </div>
+            <h2
+              className="text-4xl lg:text-5xl font-bold text-white mb-4"
+              style={{ fontFamily: "Playfair Display, serif" }}
+            >
+              Our Creative <span className="text-blue-400">Projects</span>
+            </h2>
+            <p
+              className="text-white/70 text-lg max-w-2xl mx-auto"
+              style={{ fontFamily: "Georgia, serif" }}
+            >
+              Explore some of our recent work that showcases our expertise
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {portfolioHighlights.map((project) => (
+              <Link
+                key={project.id}
+                to="/projects"
+                className="group relative aspect-[3/4] rounded-2xl overflow-hidden"
+              >
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <p
+                    className="text-blue-400 text-xs uppercase tracking-widest mb-2"
+                    style={{ fontFamily: "Georgia, serif" }}
+                  >
+                    {project.category}
+                  </p>
+                  <h3
+                    className="text-xl font-bold text-white"
+                    style={{ fontFamily: "Playfair Display, serif" }}
+                  >
+                    {project.title}
+                  </h3>
+                </div>
+                <div className="absolute inset-0 border-2 border-blue-400/0 group-hover:border-blue-400/30 rounded-2xl transition-all duration-500" />
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link
+              to="/projects"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full border border-white/20 transition-all duration-300 hover:scale-105"
+            >
+              View All Projects
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Trusted Companies */}
+      <section className="bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-16 border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+          <p
+            className="text-center text-white/50 text-sm uppercase tracking-widest mb-8"
+            style={{ fontFamily: "Georgia, serif" }}
+          >
+            Trusted by Leading Brands
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-16">
+            {trustedCompanies.map((company, index) => (
+              <span
+                key={index}
+                className="text-white/40 hover:text-white/70 text-lg lg:text-xl font-semibold transition-colors duration-300"
+                style={{ fontFamily: "Playfair Display, serif" }}
+              >
+                {company}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-gradient-to-br from-blue-600 to-blue-700 py-20 lg:py-24">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12 text-center">
+          <h2
+            className="text-3xl lg:text-5xl font-bold text-white mb-6"
+            style={{ fontFamily: "Playfair Display, serif" }}
+          >
+            Ready to Bring Your Vision to Life?
+          </h2>
+          <p
+            className="text-white/90 text-lg mb-10"
+            style={{ fontFamily: "Georgia, serif" }}
+          >
+            Let's create something amazing together. Get in touch for a free
+            consultation.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              to="/contact"
+              className="px-8 py-4 bg-white text-blue-600 font-bold rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-105 shadow-xl"
+            >
+              Start Your Project
+            </Link>
+            <Link
+              to="/plans"
+              className="px-8 py-4 bg-transparent text-white font-semibold rounded-full border-2 border-white/50 hover:bg-white/10 transition-all duration-300"
+            >
+              View Pricing
+            </Link>
+          </div>
+        </div>
+      </section>
+    </Layout>
+  );
+};
+
+export default HomePage;
