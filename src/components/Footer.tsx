@@ -1,7 +1,46 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Play, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import { Play, Facebook, Instagram, Twitter, Youtube, Loader2 } from "lucide-react";
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { toast } from "sonner";
+import LegalDialog from "./LegalDialog";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setIsSubscribing(true);
+    try {
+      // Check if email already exists
+      const q = query(collection(db, "subscribers"), where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        toast.info("You are already subscribed to our newsletter!");
+        setEmail("");
+        return;
+      }
+
+      // Add new subscriber
+      await addDoc(collection(db, "subscribers"), {
+        email,
+        subscribedAt: new Date().toISOString(),
+      });
+      toast.success("Successfully subscribed to our newsletter!");
+      setEmail("");
+    } catch (error) {
+      console.error("Error subscribing:", error);
+      toast.error("Failed to subscribe. Please try again.");
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
+
   const footerLinks = {
     services: [
       { name: "Basic Edit", href: "/plans" },
@@ -16,10 +55,10 @@ const Footer = () => {
       { name: "Privacy Policy", href: "#" },
     ],
     social: [
-      { name: "Facebook", icon: Facebook, href: "#" },
-      { name: "Instagram", icon: Instagram, href: "#" },
-      { name: "Twitter", icon: Twitter, href: "#" },
-      { name: "YouTube", icon: Youtube, href: "#" },
+      // { name: "Facebook", icon: Facebook, href: "#" },
+      { name: "Instagram", icon: Instagram, href: "https://www.instagram.com/donexstudio/" },
+      // { name: "Twitter", icon: Twitter, href: "#" },
+      { name: "YouTube", icon: Youtube, href: "https://youtube.com/@254streettrends?si=EOdc61TAccEVIXbu" },
     ],
   };
 
@@ -30,14 +69,15 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <Play
-                  className="w-5 h-5 text-primary-foreground"
-                  fill="currentColor"
+              {/* <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <img
+                  src="/donex-logo.jpg"
+                  alt="Donex Studio Logo"
+                  className="w-5 h-5 object-contain"
                 />
-              </div>
+              </div> */}
               <span className="text-xl font-bold font-display text-white">
-                DonexStudio
+                Donex Studio
               </span>
             </Link>
             <p className="text-white/60 mb-6">
@@ -49,6 +89,8 @@ const Footer = () => {
                 <a
                   key={social.name}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-white/10 hover:bg-primary rounded-lg flex items-center justify-center transition-colors duration-300"
                   aria-label={social.name}
                 >
@@ -106,24 +148,35 @@ const Footer = () => {
           </div>
 
           {/* Newsletter */}
-          <div>
+          <div className="lg:col-span-1">
             <h4 className="text-white font-semibold font-display mb-4">
               Stay Updated
             </h4>
-            <p className="text-white/60 mb-4">
+            <p className="text-white/60 mb-6">
               Subscribe to our newsletter for tips and updates.
             </p>
-            <form className="flex flex-col sm:flex-row gap-2">
+            <form onSubmit={handleSubscribe} className="flex flex-col gap-3">
               <input
                 type="email"
-                placeholder="Your email"
-                className="min-w-0 flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-primary"
+                placeholder="Enter your email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
               />
               <button
                 type="submit"
-                className="px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap"
+                disabled={isSubscribing}
+                className="w-full px-4 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-all hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                Subscribe
+                {isSubscribing ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Subscribing...
+                  </>
+                ) : (
+                  "Subscribe Now"
+                )}
               </button>
             </form>
           </div>
@@ -133,21 +186,21 @@ const Footer = () => {
         <div className="pt-8 border-t border-white/10">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-white/60 text-sm">
-              © {new Date().getFullYear()} DonexStudio. All rights reserved.
+              © {new Date().getFullYear()} Donex Studio. All rights reserved.
             </p>
             <div className="flex gap-6">
-              <a
-                href="#"
+              <LegalDialog
+                title="Terms and Conditions"
+                pdfUrl="/pdf/TERMS AND CONDITIONS.pdf"
+                triggerText="Terms of Service"
                 className="text-white/60 hover:text-white text-sm transition-colors"
-              >
-                Terms of Service
-              </a>
-              <a
-                href="#"
+              />
+              <LegalDialog
+                title="Privacy Policy"
+                pdfUrl="/pdf/PRIVACY NOTICE.pdf"
+                triggerText="Privacy Policy"
                 className="text-white/60 hover:text-white text-sm transition-colors"
-              >
-                Privacy Policy
-              </a>
+              />
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import emailjs from '@emailjs/browser';
 import { db } from "@/lib/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 import {
   Phone,
   Mail,
@@ -22,7 +22,7 @@ import SEO from "@/components/SEO";
 
 const packages = [
   { id: "general", name: "General Inquiry" },
-  { id: "basic-edit", name: "Basic Edit (Kshs 2,000 - 5,000)" },
+  { id: "basic-edit", name: "Basic Edit (Kshs 2,500 - 5,000)" },
   { id: "standard-edit", name: "Standard Edit (Kshs 6,000 - 12,000)" },
   { id: "advanced-edit", name: "Advanced Edit (Kshs 15,000 - 30,000+)" },
   { id: "monthly-starter", name: "Monthly Package - Starter (Kshs 20,000/month)" },
@@ -77,6 +77,20 @@ const ContactPage = () => {
       console.log("Public Key Length:", publicKey?.length || 0);
       console.log("Public Key Full (for debugging):", publicKey);
 
+      // Generate Firestore Document ID first
+      const docRef = doc(collection(db, "contacts"));
+      const docId = docRef.id;
+
+      // Generate timestamp using doc ID
+      const now = new Date();
+      // Format: YYYYMMDD using local time
+      const dateStr = now.getFullYear() +
+        String(now.getMonth() + 1).padStart(2, '0') +
+        String(now.getDate()).padStart(2, '0');
+
+      const uniqueId = docId.substring(0, 4).toUpperCase();
+      const customTimestamp = `${dateStr}-${uniqueId}`;
+
       // Prepare template parameters
       const templateParams = {
         from_name: formData.name.trim(),
@@ -84,6 +98,10 @@ const ContactPage = () => {
         subject: formData.subject.trim(),
         message: formData.message.trim(),
         package: packages.find((p) => p.id === formData.package)?.name || "General Inquiry",
+        date: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`, // YYYY-MM-DD (Local)
+        timestamp: customTimestamp,
+        year: now.getFullYear(),
+        company: "Donex Studio",
       };
 
       console.log("=== Template Parameters ===");
@@ -91,9 +109,10 @@ const ContactPage = () => {
 
       // Save to Firestore
       try {
-        await addDoc(collection(db, "contacts"), {
+        await setDoc(docRef, {
           ...formData,
           submittedAt: new Date().toISOString(),
+          customTimestamp: customTimestamp, // Optional: save the custom timestamp to DB too
         });
       } catch (dbError) {
         console.error("Error saving to Firestore:", dbError);
@@ -169,10 +188,10 @@ const ContactPage = () => {
   ];
 
   const socialLinks = [
-    { name: "Facebook", icon: Facebook, href: "#" },
-    { name: "Instagram", icon: Instagram, href: "#" },
-    { name: "Twitter", icon: Twitter, href: "#" },
-    { name: "YouTube", icon: Youtube, href: "#" },
+    // { name: "Facebook", icon: Facebook, href: "#" },
+    { name: "Instagram", icon: Instagram, href: "https://www.instagram.com/donexstudio/" },
+    // { name: "Twitter", icon: Twitter, href: "#" },
+    { name: "YouTube", icon: Youtube, href: "https://youtube.com/@254streettrends?si=EOdc61TAccEVIXbu" },
   ];
 
   return (
@@ -296,6 +315,8 @@ const ContactPage = () => {
                     <a
                       key={social.name}
                       href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="w-12 h-12 bg-white/10 hover:bg-blue-600 rounded-xl flex items-center justify-center transition-all duration-300 group"
                       aria-label={social.name}
                     >
