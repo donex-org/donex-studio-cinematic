@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Phone, Mail, MapPin, Clock, MessageCircle, Send } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/lib/firebase";
+import { collection, addDoc } from "firebase/firestore";
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -22,26 +24,38 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     const trimmedData = {
       name: formData.name.trim(),
       email: formData.email.trim(),
       subject: formData.subject.trim(),
       message: formData.message.trim(),
+      submittedAt: new Date().toISOString(),
     };
 
     try {
-      // Save to database
-      const { error } = await supabase.from("contacts").insert(trimmedData);
-      if (error) throw error;
+      // Save to Firestore
+      await addDoc(collection(db, "contacts"), trimmedData);
 
-      // Send email notification
-      const emailResponse = await supabase.functions.invoke("send-contact-email", {
-        body: trimmedData,
-      });
+      // Send email notification via EmailJS
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-      if (emailResponse.error) {
-        console.error("Email notification failed:", emailResponse.error);
+      if (serviceId && templateId && publicKey) {
+        await emailjs.send(
+          serviceId,
+          templateId,
+          {
+            from_name: trimmedData.name,
+            from_email: trimmedData.email,
+            subject: trimmedData.subject,
+            message: trimmedData.message,
+          },
+          publicKey
+        );
+      } else {
+        console.warn("EmailJS configuration missing, skipping email notification");
       }
 
       toast.success("Message sent successfully! We'll get back to you soon.");
@@ -64,8 +78,8 @@ const Contact = () => {
     {
       icon: Mail,
       title: "Email",
-      value: "hello@donexstudio.com",
-      href: "mailto:hello@donexstudio.com",
+      value: "Info@donexstudio.com",
+      href: "mailto:Info@donexstudio.com",
     },
     {
       icon: MapPin,

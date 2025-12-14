@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
-import { Play, Filter } from "lucide-react";
+import { Filter } from "lucide-react";
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 
 type Project = {
   id: number;
@@ -89,7 +90,6 @@ const projects: Project[] = [
 
 const ProjectsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [playingVideo, setPlayingVideo] = useState<number | null>(null);
   const videoRefs = useRef<{ [key: number]: HTMLVideoElement | null }>({});
 
   const filteredProjects =
@@ -98,27 +98,25 @@ const ProjectsPage = () => {
       : projects.filter((p) => p.category === selectedCategory);
 
   const handlePlayVideo = (projectId: number) => {
-    // Pause any currently playing video
-    if (playingVideo && videoRefs.current[playingVideo]) {
-      videoRefs.current[playingVideo]?.pause();
+    if (videoRefs.current[projectId]) {
+      videoRefs.current[projectId]?.play();
     }
-    setPlayingVideo(projectId);
   };
 
   const handleMouseLeave = (projectId: number) => {
     if (videoRefs.current[projectId]) {
       videoRefs.current[projectId]?.pause();
-      if (videoRefs.current[projectId]) {
-        videoRefs.current[projectId]!.currentTime = 0;
-      }
-    }
-    if (playingVideo === projectId) {
-      setPlayingVideo(null);
+      videoRefs.current[projectId]!.currentTime = 0;
     }
   };
 
   return (
     <Layout>
+      <SEO
+        title="Our Projects | DonexStudio Portfolio - Video Editing Showcase"
+        description="Explore our portfolio of video editing projects including corporate videos, music videos, documentaries, and social media content. See the quality of our work."
+        keywords="video editing portfolio, Kenya video projects, corporate videos, music video editing, documentary editing"
+      />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 pt-32 pb-16 lg:pt-40 lg:pb-20">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl" />
@@ -160,11 +158,10 @@ const ProjectsPage = () => {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                  selectedCategory === category
-                    ? "bg-blue-600 text-white"
-                    : "bg-white/10 text-white/70 hover:bg-white/20 hover:text-white"
-                }`}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${selectedCategory === category
+                  ? "bg-blue-600 text-white"
+                  : "bg-white/10 text-white/70 hover:bg-white/20 hover:text-white"
+                  }`}
                 style={{ fontFamily: "Georgia, serif" }}
               >
                 {category}
@@ -178,39 +175,19 @@ const ProjectsPage = () => {
               <div
                 key={project.id}
                 className="group relative rounded-2xl overflow-hidden bg-white/5 backdrop-blur-sm border border-white/10 hover:border-blue-400/30 transition-all duration-500"
+                onMouseEnter={() => handlePlayVideo(project.id)}
                 onMouseLeave={() => handleMouseLeave(project.id)}
               >
-                {/* Thumbnail / Video */}
+                {/* Video */}
                 <div className="relative aspect-video overflow-hidden">
-                  {playingVideo === project.id ? (
-                    <video
-                      ref={(el) => (videoRefs.current[project.id] = el)}
-                      src={project.videoUrl}
-                      className="w-full h-full object-cover"
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                    />
-                  ) : (
-                    <>
-                      <img
-                        src={project.thumbnail}
-                        alt={project.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-300" />
-                      <button
-                        onClick={() => handlePlayVideo(project.id)}
-                        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
-                      >
-                        <Play
-                          className="w-6 h-6 text-white ml-1"
-                          fill="currentColor"
-                        />
-                      </button>
-                    </>
-                  )}
+                  <video
+                    ref={(el) => (videoRefs.current[project.id] = el)}
+                    src={project.videoUrl}
+                    className="w-full h-full object-cover"
+                    loop
+                    muted
+                    playsInline
+                  />
 
                   {/* Category Badge */}
                   <span

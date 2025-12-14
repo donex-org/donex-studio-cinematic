@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Check, Sparkles, Star, HelpCircle, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 
 const pricingTiers = [
   {
@@ -134,6 +135,11 @@ const PlansPage = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Pricing Plans | DonexStudio - Affordable Video Editing Packages"
+        description="Professional video editing packages from Kshs 2,000. Choose from Basic, Standard, or Advanced editing plans. Monthly retainers available. Transparent pricing for all budgets."
+        keywords="video editing prices Kenya, video editing packages, affordable video editing, video editing rates, monthly video editing"
+      />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 pt-32 pb-16 lg:pt-40 lg:pb-20">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl" />
@@ -172,11 +178,10 @@ const PlansPage = () => {
             {pricingTiers.map((tier) => (
               <div
                 key={tier.id}
-                className={`relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 transition-all duration-500 hover:bg-white/10 hover:border-white/20 ${
-                  tier.popular
-                    ? "ring-2 ring-blue-500 scale-105 shadow-2xl shadow-blue-500/20"
-                    : "shadow-xl"
-                }`}
+                className={`relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 transition-all duration-500 hover:bg-white/10 hover:border-white/20 ${tier.popular
+                  ? "ring-2 ring-blue-500 scale-105 shadow-2xl shadow-blue-500/20"
+                  : "shadow-xl"
+                  }`}
               >
                 {tier.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -246,12 +251,11 @@ const PlansPage = () => {
                 </div>
 
                 <Link
-                  to="/contact"
-                  className={`block w-full py-3 px-6 rounded-full font-bold text-center transition-all duration-300 ${
-                    tier.popular
-                      ? "bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30 hover:scale-105"
-                      : "bg-white/10 hover:bg-white/20 text-white border border-white/20"
-                  }`}
+                  to={`/contact?package=${tier.id}`}
+                  className={`block w-full py-3 px-6 rounded-full font-bold text-center transition-all duration-300 ${tier.popular
+                    ? "bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/30 hover:scale-105"
+                    : "bg-white/10 hover:bg-white/20 text-white border border-white/20"
+                    }`}
                 >
                   Get Started
                 </Link>
@@ -293,11 +297,10 @@ const PlansPage = () => {
             {monthlyPackages.map((pkg) => (
               <div
                 key={pkg.id}
-                className={`relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 transition-all duration-500 hover:bg-white/15 hover:border-white/20 ${
-                  pkg.bestValue
-                    ? "ring-2 ring-blue-400 shadow-xl shadow-blue-500/20"
-                    : "shadow-lg"
-                }`}
+                className={`relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 transition-all duration-500 hover:bg-white/15 hover:border-white/20 ${pkg.bestValue
+                  ? "ring-2 ring-blue-400 shadow-xl shadow-blue-500/20"
+                  : "shadow-lg"
+                  }`}
               >
                 {pkg.bestValue && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -344,7 +347,7 @@ const PlansPage = () => {
                     {pkg.description}
                   </p>
                   <Link
-                    to="/contact"
+                    to={`/contact?package=${pkg.id}`}
                     className="block w-full py-2.5 px-4 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 font-medium transition-all duration-300 hover:scale-105"
                   >
                     Select Plan
@@ -381,9 +384,8 @@ const PlansPage = () => {
             {addOns.map((addon, index) => (
               <div
                 key={index}
-                className={`flex items-center justify-between p-4 ${
-                  index !== addOns.length - 1 ? "border-b border-white/10" : ""
-                }`}
+                className={`flex items-center justify-between p-4 ${index !== addOns.length - 1 ? "border-b border-white/10" : ""
+                  }`}
               >
                 <span
                   className="text-white"
@@ -523,16 +525,14 @@ const PlansPage = () => {
                 >
                   <div className="flex items-center gap-4 flex-1">
                     <div
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
-                        openFaq === index
-                          ? "bg-blue-600"
-                          : "bg-blue-500/20 group-hover:bg-blue-500/30"
-                      }`}
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 ${openFaq === index
+                        ? "bg-blue-600"
+                        : "bg-blue-500/20 group-hover:bg-blue-500/30"
+                        }`}
                     >
                       <HelpCircle
-                        className={`w-5 h-5 transition-colors duration-300 ${
-                          openFaq === index ? "text-white" : "text-blue-400"
-                        }`}
+                        className={`w-5 h-5 transition-colors duration-300 ${openFaq === index ? "text-white" : "text-blue-400"
+                          }`}
                       />
                     </div>
                     <span
@@ -543,17 +543,15 @@ const PlansPage = () => {
                     </span>
                   </div>
                   <ChevronDown
-                    className={`w-5 h-5 text-white/60 transition-transform duration-300 ${
-                      openFaq === index ? "rotate-180" : ""
-                    }`}
+                    className={`w-5 h-5 text-white/60 transition-transform duration-300 ${openFaq === index ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
                 <div
-                  className={`transition-all duration-500 ease-in-out ${
-                    openFaq === index
-                      ? "max-h-96 opacity-100"
-                      : "max-h-0 opacity-0"
-                  }`}
+                  className={`transition-all duration-500 ease-in-out ${openFaq === index
+                    ? "max-h-96 opacity-100"
+                    : "max-h-0 opacity-0"
+                    }`}
                 >
                   <div className="px-6 pb-6">
                     <div className="pl-14">

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Play, Star, Users, Award, Film } from "lucide-react";
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 
 const portfolioHighlights = [
   {
@@ -47,20 +48,21 @@ const trustedCompanies = [
 const HomePage = () => {
   return (
     <Layout>
+      <SEO
+        title="DonexStudio | Professional Video Editing Services Kenya"
+        description="Transform your raw footage into stunning cinematic masterpieces. Professional video editing services in Kenya for creators, brands, and businesses. Packages from Kshs 2,000."
+        keywords="video editing Kenya, professional video editor, YouTube editor, TikTok editor, video production, DonexStudio"
+      />
       {/* Hero Section */}
       <section className="relative min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 flex items-center justify-center overflow-hidden">
-        {/* Background Video/Image */}
+        {/* Background Image */}
         <div className="absolute inset-0">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover opacity-30"
-          >
-            <source src="/videos/1.mp4" type="video/mp4" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/80 via-gray-900/60 to-gray-900" />
+          <img
+            src="/images/hero.jpg"
+            alt="DonexStudio Hero"
+            className="w-full h-full object-cover opacity-60"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-900/20 via-gray-900/60 to-gray-900" />
         </div>
 
         {/* Decorative Elements */}
