@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import emailjs from '@emailjs/browser';
+import { db } from "@/lib/firebase";
+import { collection, addDoc } from "firebase/firestore";
 import {
   Phone,
   Mail,
@@ -12,21 +16,43 @@ import {
   Youtube,
 } from "lucide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
+
+const packages = [
+  { id: "general", name: "General Inquiry" },
+  { id: "basic-edit", name: "Basic Edit (Kshs 2,000 - 5,000)" },
+  { id: "standard-edit", name: "Standard Edit (Kshs 6,000 - 12,000)" },
+  { id: "advanced-edit", name: "Advanced Edit (Kshs 15,000 - 30,000+)" },
+  { id: "monthly-starter", name: "Monthly Package - Starter (Kshs 20,000/month)" },
+  { id: "monthly-creator", name: "Monthly Package - Creator (Kshs 45,000/month)" },
+  { id: "monthly-studio", name: "Monthly Package - Studio (Kshs 90,000/month)" },
+  { id: "custom", name: "Custom Package" },
+];
 
 const ContactPage = () => {
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
     subject: "",
     message: "",
+    package: "general",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Pre-fill package from URL parameter
+  useEffect(() => {
+    const packageParam = searchParams.get("package");
+    if (packageParam && packages.find(p => p.id === packageParam)) {
+      setFormData(prev => ({ ...prev, package: packageParam }));
+    }
+  }, [searchParams]);
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setFormData({
       ...formData,
@@ -38,27 +64,53 @@ const ContactPage = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const trimmedData = {
-      name: formData.name.trim(),
-      email: formData.email.trim(),
-      subject: formData.subject.trim(),
-      message: formData.message.trim(),
-    };
-
     try {
-      const { error } = await supabase.from("contacts").insert(trimmedData);
-      if (error) throw error;
+      // Log EmailJS configuration (with partial masking for security)
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-      const emailResponse = await supabase.functions.invoke(
-        "send-contact-email",
-        {
-          body: trimmedData,
-        }
+      console.log("=== EmailJS Configuration ===");
+      console.log("Service ID:", serviceId);
+      console.log("Template ID:", templateId);
+      console.log("Public Key:", publicKey ? `${publicKey.substring(0, 8)}...${publicKey.substring(publicKey.length - 4)}` : "MISSING");
+      console.log("Public Key Length:", publicKey?.length || 0);
+      console.log("Public Key Full (for debugging):", publicKey);
+
+      // Prepare template parameters
+      const templateParams = {
+        from_name: formData.name.trim(),
+        from_email: formData.email.trim(),
+        subject: formData.subject.trim(),
+        message: formData.message.trim(),
+        package: packages.find((p) => p.id === formData.package)?.name || "General Inquiry",
+      };
+
+      console.log("=== Template Parameters ===");
+      console.log(JSON.stringify(templateParams, null, 2));
+
+      // Save to Firestore
+      try {
+        await addDoc(collection(db, "contacts"), {
+          ...formData,
+          submittedAt: new Date().toISOString(),
+        });
+      } catch (dbError) {
+        console.error("Error saving to Firestore:", dbError);
+        // Continue to send email even if DB save fails
+      }
+
+      // Send email via EmailJS
+      console.log("=== Sending Email ===");
+      const response = await emailjs.send(
+        serviceId,
+        templateId,
+        templateParams,
+        publicKey
       );
 
-      if (emailResponse.error) {
-        console.error("Email notification failed:", emailResponse.error);
-      }
+      console.log("=== EmailJS Response ===");
+      console.log("Response:", response);
 
       toast.success("Message sent successfully! We'll get back to you soon.");
       setFormData({
@@ -67,9 +119,22 @@ const ContactPage = () => {
         phone: "",
         subject: "",
         message: "",
+        package: "general",
       });
     } catch (error) {
+      console.error("=== EmailJS Error ===");
       console.error("Error submitting contact form:", error);
+      console.error("Error type:", typeof error);
+      console.error("Error keys:", error ? Object.keys(error) : "null");
+      console.error("Error stringified:", JSON.stringify(error, null, 2));
+
+      // Log specific error properties if available
+      if (error && typeof error === 'object') {
+        console.error("Error status:", (error as any).status);
+        console.error("Error text:", (error as any).text);
+        console.error("Error message:", (error as any).message);
+      }
+
       toast.error("Failed to send message. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -80,8 +145,8 @@ const ContactPage = () => {
     {
       icon: Mail,
       title: "Email",
-      value: "hello@donexstudio.com",
-      href: "mailto:hello@donexstudio.com",
+      value: "info@donexstudio.com",
+      href: "mailto:info@donexstudio.com",
     },
     {
       icon: Phone,
@@ -112,6 +177,11 @@ const ContactPage = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Contact Us | DonexStudio - Get a Free Video Editing Quote"
+        description="Ready to start your video project? Contact DonexStudio for a free consultation. Email, phone, or WhatsApp. Located in Nairobi, Kenya. Mon-Sat: 9AM-6PM."
+        keywords="contact DonexStudio, video editing quote Kenya, video editing consultation, Nairobi video editor"
+      />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 pt-32 pb-16 lg:pt-40 lg:pb-20">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl" />
@@ -190,16 +260,28 @@ const ContactPage = () => {
                 ))}
               </div>
 
-              {/* WhatsApp Button */}
-              <a
-                href="https://wa.me/254790842476"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105 mb-10"
-              >
-                <MessageCircle className="w-5 h-5" />
-                Chat on WhatsApp
-              </a>
+              {/* WhatsApp Quick Inquiry */}
+              <div className="mb-10">
+                <p
+                  className="text-white/80 text-sm mb-3"
+                  style={{ fontFamily: "Georgia, serif" }}
+                >
+                  Or inquire directly via WhatsApp:
+                </p>
+                <a
+                  href={`https://wa.me/254790842476?text=${encodeURIComponent(
+                    `Hi DonexStudio! I'm interested in the ${packages.find((p) => p.id === formData.package)?.name || "your services"
+                    }. I'd like to discuss my video editing needs.${formData.name ? `\n\nName: ${formData.name}` : ""
+                    }${formData.email ? `\nEmail: ${formData.email}` : ""}`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:scale-105"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  Quick Inquiry via WhatsApp
+                </a>
+              </div>
 
               {/* Social Links */}
               <div>
@@ -317,6 +399,31 @@ const ContactPage = () => {
                       placeholder="Project inquiry"
                     />
                   </div>
+                </div>
+
+                {/* Package Selection */}
+                <div>
+                  <label
+                    htmlFor="package"
+                    className="block text-sm font-medium text-white/80 mb-2"
+                    style={{ fontFamily: "Georgia, serif" }}
+                  >
+                    Package/Service Interested In
+                  </label>
+                  <select
+                    id="package"
+                    name="package"
+                    value={formData.package}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-blue-400 transition-all appearance-none cursor-pointer"
+                    style={{ fontFamily: "Georgia, serif" }}
+                  >
+                    {packages.map((pkg) => (
+                      <option key={pkg.id} value={pkg.id} className="bg-gray-900 text-white">
+                        {pkg.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>

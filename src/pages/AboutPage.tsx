@@ -10,6 +10,7 @@ import {
   Heart,
 } from "lucide-react";
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 
 const teamMembers = [
   {
@@ -68,6 +69,11 @@ const whyChooseUs = [
 const AboutPage = () => {
   return (
     <Layout>
+      <SEO
+        title="About Us | DonexStudio - Professional Video Editing Team"
+        description="Meet the passionate team behind DonexStudio. Since 2014, we've been transforming raw footage into compelling visual narratives for creators and businesses across Kenya."
+        keywords="about DonexStudio, video editing team Kenya, professional editors, video production company"
+      />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 pt-32 pb-20 lg:pt-40 lg:pb-32">
         <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl" />
@@ -238,7 +244,7 @@ const AboutPage = () => {
       </section>
 
       {/* Team Section */}
-      <section className="bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-20 lg:py-32">
+      {/* <section className="bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
           <div className="text-center mb-16">
             <div className="inline-block mb-4">
@@ -292,7 +298,7 @@ const AboutPage = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Why Choose Us */}
       <section className="bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-20 lg:py-32">
