@@ -9,7 +9,7 @@ const pricingTiers = [
     id: "basic",
     name: "Basic Edit",
     subtitle: "Starter Pack",
-    price: "Kshs 2,000 – 5,000",
+    price: "Kshs 2,500 – 5,000",
     period: "/video",
     features: [
       "Basic cuts and transitions",

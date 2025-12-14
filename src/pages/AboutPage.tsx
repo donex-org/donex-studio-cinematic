@@ -8,6 +8,7 @@ import {
   Award,
   Clock,
   Heart,
+  User,
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import SEO from "@/components/SEO";
@@ -132,7 +133,7 @@ const AboutPage = () => {
               </h2>
               <div className="space-y-4 text-white/70" style={{ fontFamily: "Georgia, serif" }}>
                 <p>
-                  DonexStudio was founded in 2014 with a simple mission: to help
+                  Donex Studio was founded in 2020 with a simple mission: to help
                   creators and businesses tell their stories through the power
                   of video. What started as a one-person operation has grown
                   into a full-service video editing studio.
@@ -244,7 +245,8 @@ const AboutPage = () => {
       </section>
 
       {/* Team Section */}
-      {/* <section className="bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-20 lg:py-32">
+      {/* Team Section */}
+      <section className="bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
           <div className="text-center mb-16">
             <div className="inline-block mb-4">
@@ -271,19 +273,48 @@ const AboutPage = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            {teamMembers.map((member, index) => (
-              <div key={index} className="group text-center">
-                <div className="relative mb-4 rounded-2xl overflow-hidden">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/20 transition-all duration-300" />
+          {/* Founder */}
+          <div className="flex justify-center mb-16 relative">
+            <div className="group text-center relative z-10">
+              <div className="relative mb-4 rounded-full overflow-hidden w-48 h-48 mx-auto border-4 border-blue-500/30">
+                <img
+                  src={teamMembers[0].image}
+                  alt={teamMembers[0].name}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/20 transition-all duration-300" />
+              </div>
+              <h3
+                className="text-xl font-bold text-white"
+                style={{ fontFamily: "Playfair Display, serif" }}
+              >
+                {teamMembers[0].name}
+              </h3>
+              <p
+                className="text-blue-400 font-medium text-sm"
+                style={{ fontFamily: "Georgia, serif" }}
+              >
+                {teamMembers[0].role}
+              </p>
+            </div>
+
+            {/* Connecting Lines */}
+            <div className="absolute top-48 left-1/2 -translate-x-1/2 w-0.5 h-16 bg-gradient-to-b from-blue-500/30 to-blue-500/10 -z-0" />
+            <div className="absolute top-[calc(12rem+4rem)] left-1/2 -translate-x-1/2 w-[80%] h-0.5 bg-blue-500/10 -z-0 hidden md:block" />
+            <div className="absolute top-[calc(12rem+4rem)] left-[10%] w-0.5 h-8 bg-blue-500/10 -z-0 hidden md:block" />
+            <div className="absolute top-[calc(12rem+4rem)] left-1/2 w-0.5 h-8 bg-blue-500/10 -z-0 hidden md:block" />
+            <div className="absolute top-[calc(12rem+4rem)] right-[10%] w-0.5 h-8 bg-blue-500/10 -z-0 hidden md:block" />
+          </div>
+
+          {/* Team Members */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+            {teamMembers.slice(1).map((member, index) => (
+              <div key={index} className="group text-center bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/5 hover:border-blue-500/30 transition-all duration-300">
+                <div className="relative mb-4 rounded-full overflow-hidden w-24 h-24 mx-auto bg-white/10 flex items-center justify-center">
+                  <User className="w-12 h-12 text-blue-400" />
                 </div>
                 <h3
-                  className="text-lg font-bold text-white"
+                  className="text-lg font-bold text-white mb-1"
                   style={{ fontFamily: "Playfair Display, serif" }}
                 >
                   {member.name}
@@ -298,7 +329,7 @@ const AboutPage = () => {
             ))}
           </div>
         </div>
-      </section> */}
+      </section>
 
       {/* Why Choose Us */}
       <section className="bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-20 lg:py-32">

@@ -111,4 +111,21 @@
   .font-display {
     font-family: 'Poppins', sans-serif;
   }
+  
+  .animate-scroll {
+    animation: scroll 30s linear infinite;
+  }
+  
+  .pause-on-hover:hover .animate-scroll {
+    animation-play-state: paused;
+  }
+  
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
 }

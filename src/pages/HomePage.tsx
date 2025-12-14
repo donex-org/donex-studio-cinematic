@@ -31,18 +31,14 @@ const portfolioHighlights = [
 ];
 
 const stats = [
-  { icon: Film, number: "500+", label: "Projects Completed" },
-  { icon: Award, number: "50+", label: "Awards Won" },
-  { icon: Users, number: "200+", label: "Happy Clients" },
-  { icon: Star, number: "10+", label: "Years Experience" },
+  { icon: Film, number: "150+", label: "Projects Completed" },
+  { icon: Users, number: "100+", label: "Happy Clients" },
+  { icon: Star, number: "5+", label: "Years Experience" },
 ];
 
 const trustedCompanies = [
-  "TechKE Solutions",
-  "Style & Grace",
-  "Events by Grace",
-  "MediaHouse Kenya",
-  "Creative Labs",
+  { name: "Rusty", logo: "/images/trustee/rusty.png" },
+  { name: "Sozo", logo: "/images/trustee/sozo.jpeg" },
 ];
 
 const HomePage = () => {
@@ -60,9 +56,9 @@ const HomePage = () => {
           <img
             src="/images/hero.jpg"
             alt="DonexStudio Hero"
-            className="w-full h-full object-cover opacity-60"
+            className="w-full h-full object-cover opacity-90"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-blue-900/20 via-gray-900/60 to-gray-900" />
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/30 via-gray-900/10 to-gray-900" />
         </div>
 
         {/* Decorative Elements */}
@@ -128,7 +124,7 @@ const HomePage = () => {
       {/* Stats Section */}
       <section className="bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {stats.map((stat, index) => (
               <div
                 key={index}
@@ -194,18 +190,13 @@ const HomePage = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <p
-                    className="text-blue-400 text-xs uppercase tracking-widest mb-2"
-                    style={{ fontFamily: "Georgia, serif" }}
-                  >
-                    {project.category}
-                  </p>
-                  <h3
+
+                  {/* <h3
                     className="text-xl font-bold text-white"
                     style={{ fontFamily: "Playfair Display, serif" }}
                   >
                     {project.title}
-                  </h3>
+                  </h3> */}
                 </div>
                 <div className="absolute inset-0 border-2 border-blue-400/0 group-hover:border-blue-400/30 rounded-2xl transition-all duration-500" />
               </Link>
@@ -233,16 +224,18 @@ const HomePage = () => {
           >
             Trusted by Leading Brands
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-16">
-            {trustedCompanies.map((company, index) => (
-              <span
-                key={index}
-                className="text-white/40 hover:text-white/70 text-lg lg:text-xl font-semibold transition-colors duration-300"
-                style={{ fontFamily: "Playfair Display, serif" }}
-              >
-                {company}
-              </span>
-            ))}
+          <div className="relative w-full overflow-hidden pause-on-hover">
+            <div className="flex animate-scroll w-max gap-16 items-center">
+              {[...trustedCompanies, ...trustedCompanies, ...trustedCompanies, ...trustedCompanies].map((company, index) => (
+                <div key={index} className="flex items-center justify-center min-w-[200px]">
+                  <img
+                    src={company.logo}
+                    alt={company.name}
+                    className="h-16 w-auto opacity-40 hover:opacity-100 transition-opacity duration-300 object-contain grayscale hover:grayscale-0"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

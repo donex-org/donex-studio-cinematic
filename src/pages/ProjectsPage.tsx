@@ -153,8 +153,8 @@ const ProjectsPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
           {/* Category Filter */}
           <div className="flex items-center justify-center gap-2 mb-12 flex-wrap">
-            <Filter className="w-5 h-5 text-white/60 mr-2" />
-            {categories.map((category) => (
+            {/* <Filter className="w-5 h-5 text-white/60 mr-2" /> */}
+            {/* {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
@@ -166,7 +166,7 @@ const ProjectsPage = () => {
               >
                 {category}
               </button>
-            ))}
+            ))} */}
           </div>
 
           {/* Projects Grid */}
@@ -189,13 +189,7 @@ const ProjectsPage = () => {
                     playsInline
                   />
 
-                  {/* Category Badge */}
-                  <span
-                    className="absolute top-4 left-4 px-3 py-1 bg-blue-600/80 backdrop-blur-sm text-white text-xs rounded-full"
-                    style={{ fontFamily: "Georgia, serif" }}
-                  >
-                    {project.category}
-                  </span>
+
                 </div>
 
                 {/* Info */}
