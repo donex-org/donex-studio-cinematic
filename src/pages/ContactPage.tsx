@@ -70,12 +70,6 @@ const ContactPage = () => {
       const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
       const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-      console.log("=== EmailJS Configuration ===");
-      console.log("Service ID:", serviceId);
-      console.log("Template ID:", templateId);
-      console.log("Public Key:", publicKey ? `${publicKey.substring(0, 8)}...${publicKey.substring(publicKey.length - 4)}` : "MISSING");
-      console.log("Public Key Length:", publicKey?.length || 0);
-      console.log("Public Key Full (for debugging):", publicKey);
 
       // Generate Firestore Document ID first
       const docRef = doc(collection(db, "contacts"));
@@ -104,8 +98,6 @@ const ContactPage = () => {
         company: "Donex Studio",
       };
 
-      console.log("=== Template Parameters ===");
-      console.log(JSON.stringify(templateParams, null, 2));
 
       // Save to Firestore
       try {
@@ -115,12 +107,10 @@ const ContactPage = () => {
           customTimestamp: customTimestamp, // Optional: save the custom timestamp to DB too
         });
       } catch (dbError) {
-        console.error("Error saving to Firestore:", dbError);
         // Continue to send email even if DB save fails
       }
 
       // Send email via EmailJS
-      console.log("=== Sending Email ===");
       const response = await emailjs.send(
         serviceId,
         templateId,
@@ -128,8 +118,6 @@ const ContactPage = () => {
         publicKey
       );
 
-      console.log("=== EmailJS Response ===");
-      console.log("Response:", response);
 
       toast.success("Message sent successfully! We'll get back to you soon.");
       setFormData({
@@ -141,17 +129,9 @@ const ContactPage = () => {
         package: "general",
       });
     } catch (error) {
-      console.error("=== EmailJS Error ===");
-      console.error("Error submitting contact form:", error);
-      console.error("Error type:", typeof error);
-      console.error("Error keys:", error ? Object.keys(error) : "null");
-      console.error("Error stringified:", JSON.stringify(error, null, 2));
 
       // Log specific error properties if available
       if (error && typeof error === 'object') {
-        console.error("Error status:", (error as any).status);
-        console.error("Error text:", (error as any).text);
-        console.error("Error message:", (error as any).message);
       }
 
       toast.error("Failed to send message. Please try again.");

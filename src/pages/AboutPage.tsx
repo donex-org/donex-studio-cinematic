@@ -15,28 +15,24 @@ import SEO from "@/components/SEO";
 
 const teamMembers = [
   {
-    name: "David Kinyua",
+    name: "Jasper Donex",
     role: "Founder & Lead Editor",
-    image:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop",
+    image: "/images/us/donex.jpg",
   },
   {
     name: "Sarah Wanjiru",
     role: "Creative Director",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop",
+    image: null,
   },
   {
     name: "James Ochieng",
     role: "Senior Editor",
-    image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop",
+    image: null,
   },
   {
     name: "Grace Muthoni",
     role: "Motion Graphics Artist",
-    image:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop",
+    image: null,
   },
 ];
 
@@ -276,12 +272,16 @@ const AboutPage = () => {
           {/* Founder */}
           <div className="flex justify-center mb-16 relative">
             <div className="group text-center relative z-10">
-              <div className="relative mb-4 rounded-full overflow-hidden w-48 h-48 mx-auto border-4 border-blue-500/30">
-                <img
-                  src={teamMembers[0].image}
-                  alt={teamMembers[0].name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
+              <div className="relative mb-4 rounded-full overflow-hidden w-48 h-48 mx-auto border-4 border-blue-500/30 bg-white/10 flex items-center justify-center">
+                {teamMembers[0].image ? (
+                  <img
+                    src={teamMembers[0].image}
+                    alt={teamMembers[0].name}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                ) : (
+                  <User className="w-24 h-24 text-blue-400" />
+                )}
                 <div className="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/20 transition-all duration-300" />
               </div>
               <h3
@@ -311,7 +311,15 @@ const AboutPage = () => {
             {teamMembers.slice(1).map((member, index) => (
               <div key={index} className="group text-center bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/5 hover:border-blue-500/30 transition-all duration-300">
                 <div className="relative mb-4 rounded-full overflow-hidden w-24 h-24 mx-auto bg-white/10 flex items-center justify-center">
-                  <User className="w-12 h-12 text-blue-400" />
+                  {member.image ? (
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  ) : (
+                    <User className="w-12 h-12 text-blue-400" />
+                  )}
                 </div>
                 <h3
                   className="text-lg font-bold text-white mb-1"
