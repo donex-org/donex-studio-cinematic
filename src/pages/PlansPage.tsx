@@ -95,7 +95,7 @@ const monthlyPackages = [
     name: "Studio",
     price: "Kshs 90,000",
     period: "/month",
-    videos: "15 videos",
+    videos: "15 videos ",
     description: "Complete video production solution",
     bestValue: false,
   },
