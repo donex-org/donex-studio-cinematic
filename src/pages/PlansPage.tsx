@@ -6,55 +6,68 @@ import SEO from "@/components/SEO";
 
 const pricingTiers = [
   {
-    id: "basic",
-    name: "Basic Edit",
-    subtitle: "Starter Pack",
-    price: "Kshs 2,500 – 5,000",
-    period: "/video",
+    id: "videos",
+    name: "Videos",
+    subtitle: "Full Videography & Editing",
+    price: "Kshs 5,000",
+    period: "– 65,000",
     features: [
-      "Basic cuts and transitions",
-      "Color correction",
-      "Background music",
-      "Simple text overlays",
-      "1-2 revision rounds",
+      "5-10 Minute Video — Kshs 40,000",
+      ">10 Minute Video — Kshs 65,000",
+      "1-5 Minute Video — Kshs 20,000",
+      "15-60 Seconds Promo — Kshs 5,000",
     ],
-    bestFor: "Perfect for quick social media clips and simple edits",
+    bestFor: "Complete shoot-to-edit packages for any video length",
     popular: false,
   },
   {
-    id: "standard",
-    name: "Standard Edit",
-    subtitle: "Creator Pack",
-    price: "Kshs 6,000 – 12,000",
-    period: "/video",
+    id: "filming",
+    name: "Filming Only",
+    subtitle: "On-Location Shoot",
+    price: "Kshs 30,000",
+    period: "– 50,000",
     features: [
-      "Advanced transitions & effects",
-      "Professional color grading",
-      "Custom graphics & lower thirds",
-      "Sound design & mixing",
-      "3-4 revision rounds",
-      "Intro/outro animations",
+      "Half Day (4 Hours) — Kshs 30,000",
+      "Full Day (8 Hours) — Kshs 50,000",
     ],
-    bestFor: "Ideal for YouTubers, content creators, and small businesses",
+    bestFor: "Professional on-site filming without editing",
     popular: true,
   },
   {
-    id: "advanced",
-    name: "Advanced Edit",
-    subtitle: "Pro Pack",
-    price: "Kshs 15,000 – 30,000+",
-    period: "/video",
+    id: "editing",
+    name: "Editing Only",
+    subtitle: "Post-Production",
+    price: "Kshs 5,000",
+    period: "– 35,000",
     features: [
-      "Cinematic editing & VFX",
-      "Advanced motion graphics",
-      "Custom animations",
-      "Professional voiceover sync",
-      "Multi-camera editing",
-      "Unlimited revisions",
-      "Priority delivery",
+      "> 5 Minute Video — Kshs 20,000",
+      ">10 Minute Video — Kshs 35,000",
+      "<1 Minute Video — Kshs 10,000",
+      "15 Seconds Promo — Kshs 5,000",
     ],
-    bestFor: "For brands, agencies, and premium productions",
+    bestFor: "Send us your raw footage and we handle the rest",
     popular: false,
+  },
+];
+
+const exclusivePackages = [
+  {
+    id: "music-videos",
+    name: "Music Videos",
+    price: "Kshs 25,000",
+    period: "starting at",
+    videos: "Negotiable",
+    description: "Professional music video production tailored to your vision",
+    bestValue: false,
+  },
+  {
+    id: "event-videos",
+    name: "Event Videos",
+    price: "Kshs 30,000",
+    period: "starting at",
+    videos: "Negotiable",
+    description: "Full event coverage — corporate, weddings, concerts & more",
+    bestValue: false,
   },
 ];
 
@@ -64,7 +77,7 @@ const monthlyPackages = [
     name: "Starter",
     price: "Kshs 20,000",
     period: "/month",
-    videos: "8 short videos",
+    videos: "4 short videos",
     description: "Perfect for consistent social media presence",
     bestValue: false,
   },
@@ -73,7 +86,7 @@ const monthlyPackages = [
     name: "Creator",
     price: "Kshs 45,000",
     period: "/month",
-    videos: "12 videos",
+    videos: "10 videos",
     description: "Most popular for active content creators",
     bestValue: true,
   },
@@ -82,7 +95,7 @@ const monthlyPackages = [
     name: "Studio",
     price: "Kshs 90,000",
     period: "/month",
-    videos: "20+ videos with extras",
+    videos: "15 videos",
     description: "Complete video production solution",
     bestValue: false,
   },
@@ -359,8 +372,101 @@ const PlansPage = () => {
         </div>
       </section>
 
-      {/* Add-On Services */}
+      {/* Exclusive Negotiable Packages */}
       <section className="bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-12 lg:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="text-center mb-12">
+            <div className="inline-block mb-4">
+              <span
+                className="text-blue-400 text-sm tracking-widest uppercase font-light"
+                style={{ fontFamily: "Georgia, serif" }}
+              >
+                Exclusive Negotiable Packages
+              </span>
+              <div className="w-12 h-0.5 bg-blue-500 mt-2 mx-auto" />
+            </div>
+            <h2
+              className="text-3xl lg:text-4xl font-bold text-white mb-4"
+              style={{ fontFamily: "Playfair Display, serif" }}
+            >
+              Specialist <span className="text-blue-400">Packages</span>
+            </h2>
+            <p
+              className="text-white/60 text-base"
+              style={{ fontFamily: "Georgia, serif" }}
+            >
+              Pricing is flexible — reach out to discuss your project
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            {exclusivePackages.map((pkg) => (
+              <div
+                key={pkg.id}
+                className={`relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-6 transition-all duration-500 hover:bg-white/15 hover:border-white/20 ${pkg.bestValue
+                  ? "ring-2 ring-blue-400 shadow-xl shadow-blue-500/20"
+                  : "shadow-lg"
+                  }`}
+              >
+                {pkg.bestValue && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs font-bold uppercase tracking-wider shadow-lg">
+                      <Star className="w-3 h-3" fill="currentColor" />
+                      Best Value
+                    </span>
+                  </div>
+                )}
+
+                <div className="text-center">
+                  <h4
+                    className="text-xl font-bold text-white mb-3"
+                    style={{ fontFamily: "Playfair Display, serif" }}
+                  >
+                    {pkg.name}
+                  </h4>
+                  <div className="mb-4">
+                    <span
+                      className="text-white/60 text-sm"
+                      style={{ fontFamily: "Georgia, serif" }}
+                    >
+                      {pkg.period}
+                    </span>
+                    <span
+                      className="text-3xl font-bold text-white block"
+                      style={{ fontFamily: "Playfair Display, serif" }}
+                    >
+                      {pkg.price}
+                    </span>
+                  </div>
+                  <div className="inline-block px-4 py-2 bg-blue-500/20 rounded-full mb-3">
+                    <p
+                      className="text-blue-300 font-semibold text-sm"
+                      style={{ fontFamily: "Georgia, serif" }}
+                    >
+                      {pkg.videos}
+                    </p>
+                  </div>
+                  <p
+                    className="text-white/60 text-sm mb-6"
+                    style={{ fontFamily: "Georgia, serif" }}
+                  >
+                    {pkg.description}
+                  </p>
+                  <Link
+                    to={`/contact?package=${pkg.id}`}
+                    className="block w-full py-2.5 px-4 rounded-full bg-white/10 hover:bg-white/20 text-white border border-white/20 font-medium transition-all duration-300 hover:scale-105"
+                  >
+                    Select Plan
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Add-On Services */}
+      {/* <section className="bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-12 lg:py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12">
           <div className="text-center mb-12">
             <div className="inline-block mb-4">
@@ -403,7 +509,7 @@ const PlansPage = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Comparison Table */}
       <section className="bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 py-12 lg:py-20">
