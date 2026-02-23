@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Play, Star, Users, Award, Film } from "lucide-react";
 import Layout from "@/components/Layout";
@@ -9,25 +10,25 @@ const portfolioHighlights = [
     id: 1,
     title: "Tech Vision",
     category: "Corporate",
-    image: "/images/1.jpg",
+    video: "/videos/reel1.mp4",
   },
   {
     id: 2,
     title: "Pixel Fusion",
     category: "Music Video",
-    image: "/images/2.jpg",
+    video: "/videos/reel2.mp4",
   },
   {
     id: 3,
     title: "EcoExplorer",
     category: "Documentary",
-    image: "/images/3.jpg",
+    video: "/videos/reel3.mp4",
   },
   {
     id: 4,
     title: "Urban Uplift",
     category: "Commercial",
-    image: "/images/4.jpg",
+    video: "/videos/reel4.mp4",
   },
 ];
 
@@ -40,9 +41,34 @@ const stats = [
 const trustedCompanies = [
   { name: "Rusty", logo: "/images/trustee/rusty.png" },
   { name: "Sozo", logo: "/images/trustee/sozo.jpeg" },
+  { name: "Bistro", logo: "/images/trustee/bistro.jpg" },
+  { name: "Parksby", logo: "/images/trustee/parksby.jpeg" },
 ];
 
 const HomePage = () => {
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+
+  const handleVideoLoad = (index: number) => {
+    const video = videoRefs.current[index];
+    if (video) {
+      // Load and show first frame
+      video.currentTime = 0.1;
+    }
+  };
+
+  const handleMouseEnter = (index: number) => {
+    const video = videoRefs.current[index];
+    if (video) {
+      video.play();
+    }
+  };
+
+  const handleMouseLeave = (index: number) => {
+    const video = videoRefs.current[index];
+    if (video) {
+      video.pause();
+    }
+  };
 
   return (
     <Layout>
@@ -179,28 +205,25 @@ const HomePage = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {portfolioHighlights.map((project) => (
+            {portfolioHighlights.map((project, index) => (
               <Link
                 key={project.id}
                 to="/projects"
                 className="group relative aspect-[3/4] rounded-2xl overflow-hidden"
+                onMouseEnter={() => handleMouseEnter(index)}
+                onMouseLeave={() => handleMouseLeave(index)}
               >
-                <img
-                  src={project.image}
-                  alt={project.title}
+                {/* Video */}
+                <video
+                  ref={(el) => (videoRefs.current[index] = el)}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  src={project.video}
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  onLoadedMetadata={() => handleVideoLoad(index)}
                 />
-                {/* <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3
-                    className="text-xl font-bold text-white"
-                    style={{ fontFamily: "Playfair Display, serif" }}
-                  >
-                    {project.title}
-                  </h3>
-                  <p className="text-blue-400 text-sm">{project.category}</p>
-                </div>
-                <div className="absolute inset-0 border-2 border-blue-400/0 group-hover:border-blue-400/30 rounded-2xl transition-all duration-500" /> */}
               </Link>
             ))}
           </div>
